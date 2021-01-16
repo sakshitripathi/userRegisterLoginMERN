@@ -92,6 +92,8 @@ class CreateUser extends React.Component {
     render() {
       return (
         <div>
+          {process.env.REACT_APP_ENV_VAR1}<br/>
+          {process.env.REACT_APP_ENV_VAR2}<br/>
             <label for="fullname">Fullname:</label>
       <input type="text" onChange={this.handleChange} id="fullname" label="fullname" variant="outlined" /><br></br><br></br>
       <label for="email">Email:</label>
