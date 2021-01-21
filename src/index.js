@@ -2,11 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import CreateUser from './component/createuser';
+import UserDetails from './component/userDetails';
 import reportWebVitals from './reportWebVitals';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import configureStore from './store';
+import { Types } from './constants/actionTypes';
+import { BrowserRouter, Route } from 'react-router-dom';
+
+const store=configureStore();
 
 ReactDOM.render(
   <React.StrictMode>
-    <CreateUser />
+    <Provider store={store}>
+    <BrowserRouter>
+        <Route path="/" component={ CreateUser }/>
+        <Route path="/user-details" component={ UserDetails }/>
+    </BrowserRouter>
+  </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

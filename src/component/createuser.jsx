@@ -2,25 +2,30 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import { createUser ,loginUser} from '../apicall'
+import { createUser ,loginUser} from '../apicall';
+import { connect } from 'react-redux';
+import { ActionCreators }from '../actions/actionCreators';
+import { Redirect } from 'react-router';
 
 
 
 class CreateUser extends React.Component {
-    state={
-        fullname:'',
-        mobileno:'',
-        email:'',
-        password:'',
-        confirmpassword:'',
-        loginemail:'',
-        loginpassword:''
+  constructor(props){
+    super(props);
+
+    this.state={
+         fullname:'',
+         mobileno:'',
+         email:'',
+         redirect : null
+      }
     }
+        
 
     onButtonClick = () => {
         console.log("the state is")
          console.log(this.state)
-         
+         /*
          if (this.state.fullname == '') {
              alert("full name cannot be empty")
              return
@@ -45,9 +50,15 @@ class CreateUser extends React.Component {
         }
         
         this.callApi()
-        
+        */
+        this.props.dispatch(ActionCreators.addProfile({
+            fullname:this.state.fullname,
+            mobileno:this.state.mobileno,
+            email:this.state.email
+          }));   
     }
     onLoginButtonClick = () => {
+      /*
         if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.state.loginemail)) {
             alert("invalid email id")
         }
@@ -55,6 +66,12 @@ class CreateUser extends React.Component {
             alert("invalid password")
         }
         this.callloginApi()
+        */
+       this.props.dispatch(ActionCreators.login({
+        email:this.state.email
+      }));
+      this.setState({ redirect: "/user-details" });
+        
     }
 
     handleChange = (e) => {
@@ -65,13 +82,14 @@ class CreateUser extends React.Component {
       }
 
 
+
     callApi = () => {
         createUser(this.state)
         .then(response => {
             response.text().then(function (text) {
                 alert(text);
               });
-         
+                    
       });
         
         //return body;
@@ -81,6 +99,10 @@ class CreateUser extends React.Component {
         .then(response => {
             response.text().then(function (text) {
                 alert(text);
+                this.props.dispatch(ActionCreators.login({
+                  email:this.state.email
+                }));
+                this.setState({ redirect: "/user-details" });
               });
          
       });
@@ -90,10 +112,11 @@ class CreateUser extends React.Component {
 
 
     render() {
+      if (this.state.redirect) {
+        return <Redirect to={this.state.redirect} />
+      }
       return (
         <div>
-          {process.env.REACT_APP_ENV_VAR1}<br/>
-          {process.env.REACT_APP_ENV_VAR2}<br/>
             <label for="fullname">Fullname:</label>
       <input type="text" onChange={this.handleChange} id="fullname" label="fullname" variant="outlined" /><br></br><br></br>
       <label for="email">Email:</label>
@@ -122,4 +145,9 @@ class CreateUser extends React.Component {
     }
   }
 
-export default CreateUser;
+const mapStateToProps = (state) => {
+  return {
+  }
+}
+  
+export default connect(mapStateToProps)(CreateUser)
